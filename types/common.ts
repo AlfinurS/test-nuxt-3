@@ -1,3 +1,7 @@
+export type objectType = {
+  [key: string]: objectType | string | number | null | string[];
+};
+
 export type coreResponse<T> = {
   data: T;
   statusText: string;

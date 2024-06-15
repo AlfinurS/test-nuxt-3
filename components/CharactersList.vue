@@ -4,13 +4,15 @@
       type="text"
       class="catalog__search-input input"
       placeholder="Поиск персонажа"
+      v-model="form.query"
+      @input="setFilteredCharacters()"
     />
   </div>
 
   <div class="page__list-wrapper">
     <div class="page__list">
       <div
-        v-for="character in form.data.results"
+        v-for="character in computedCharacters"
         :key="character.id"
         class="page__item"
       >
@@ -27,6 +29,7 @@
   </div>
 
   <Pagination
+    v-if="!form.query"
     :params="form.paginationData"
     class="catalog__pagination"
     @setPage="setPage"
@@ -36,6 +39,7 @@
 <script lang="ts">
 import { defineComponent } from 'vue';
 import { getCharactersList } from '@/api/apiService';
+import { setCharacters } from '@/store/charactersStore';
 import type {
   characterType,
   apiCharacterRespType,
@@ -46,6 +50,7 @@ import Pagination from '@/components/Pagination.vue';
 type formType = {
   data: apiCharacterRespType;
   paginationData: paginationType;
+  query: string | null;
 };
 
 const initData = (): apiCharacterRespType => ({
@@ -70,9 +75,15 @@ export default defineComponent({
     Pagination,
   },
   setup() {
+    const store = setCharacters();
+    const characters = computed((): characterType[] => store.getCharacters);
+    const filteredCharacters = computed(
+      (): characterType[] => store.getFilteredCharacters
+    );
     const form = reactive<formType>({
       data: initData(),
       paginationData: initPaginationData(),
+      query: null,
     });
 
     async function loadCharacters(): Promise<void> {
@@ -81,12 +92,25 @@ export default defineComponent({
         if (response) {
           form.data = response.data;
           form.paginationData.count = response.data.info.count;
+          store.setCharacters(response.data.results);
         }
       } catch (error) {
         console.error(error);
       }
     }
     loadCharacters();
+
+    const setFilteredCharacters = () => {
+      store.setFilteredCharacters(form.query);
+    };
+
+    const computedCharacters = computed((): characterType[] => {
+      if (form.query) {
+        return filteredCharacters.value;
+      } else {
+        return form.data.results;
+      }
+    });
 
     const getImage = (image: string): string => {
       return image;
@@ -97,7 +121,16 @@ export default defineComponent({
       loadCharacters();
     };
 
-    return { form, getImage, loadCharacters, setPage };
+    return {
+      form,
+      characters,
+      filteredCharacters,
+      getImage,
+      loadCharacters,
+      setPage,
+      setFilteredCharacters,
+      computedCharacters,
+    };
   },
 });
 </script>

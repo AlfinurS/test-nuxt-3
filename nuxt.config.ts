@@ -4,7 +4,7 @@ const { resolve } = createResolver(import.meta.url);
 
 export default defineNuxtConfig({
   devtools: { enabled: true },
-
+  modules: ['@pinia/nuxt'],
   css: [
     resolve('./assets/scss/_variables.scss'),
     resolve('./assets/scss/styles.scss'),
