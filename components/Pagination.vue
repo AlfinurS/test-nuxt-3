@@ -53,16 +53,18 @@ export default defineComponent({
       for (let i = 1; i <= pagesCounter.value; i++) {
         fullPagesList.push(i);
       }
+
       const currentPageIdx = fullPagesList.findIndex(
         (el) => el === props.params.page
       );
       if (currentPageIdx === -1) {
         return [-1];
       }
-      let countNext = currentPageIdx + 1 + props.maxPagesCountAfter;
 
-      let countBefore = currentPageIdx - props.maxPagesCountBefore;
+      let countNext: number = currentPageIdx + 1 + props.maxPagesCountAfter;
+      let countBefore: number = currentPageIdx - props.maxPagesCountBefore;
       if (countBefore < 0) countBefore = 0;
+
       const result = fullPagesList.slice(countBefore, countNext);
       return result;
     });
