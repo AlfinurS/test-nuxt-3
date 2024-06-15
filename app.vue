@@ -15,30 +15,7 @@
 
 <script setup></script>
 
-<style scoped>
-header {
-  background-color: #333;
-  color: #fff;
-  padding: 1rem;
-}
-
-nav a {
-  color: #fff;
-  margin-right: 1rem;
-  text-decoration: none;
-}
-
-main {
-  padding: 1rem;
-}
-
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
+<style lang="scss" scoped>
+@import './assets/scss/styles.scss';
+@import './assets/scss/_variables.scss';
 </style>

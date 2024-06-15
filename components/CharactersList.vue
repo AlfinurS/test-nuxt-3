@@ -79,7 +79,6 @@ export default defineComponent({
       try {
         const response = await getCharactersList(form.paginationData.page);
         if (response) {
-          console.log(response);
           form.data = response.data;
           form.paginationData.count = response.data.info.count;
         }
