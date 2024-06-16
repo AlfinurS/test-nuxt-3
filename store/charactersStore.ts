@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia';
 import { ref, computed } from 'vue';
 import type { characterType } from '@/types/common.ts';
+import { deepCompareObject } from '@/utils/deepCompareObject';
 
 export const setCharacters = defineStore('charactersStore', () => {
   const charactersStore = ref<characterType[]>([]);

@@ -22,22 +22,18 @@ export type characterType = {
   species: string;
   type: string;
   gender: string;
+  location: {
+    name: string;
+    url: string;
+  };
   origin: {
     name: string;
     url: string;
   };
   image: string;
   episode: string[];
-};
-
-export type apiCharacterRespType = {
-  info: {
-    count: number;
-    pages: number;
-    next: string | null;
-    prev: string | null;
-  };
-  results: characterType[];
+  url: string;
+  created: string;
 };
 
 export type paginationType = {
@@ -45,3 +41,19 @@ export type paginationType = {
   page_size: number;
   count: number;
 };
+
+export interface IApiPaginationResp {
+  info: {
+    count: number;
+    pages: number;
+    next: string | null;
+    prev: string | null;
+  };
+  results: [];
+}
+
+export interface IFormType {
+  data: IApiPaginationResp;
+  paginationData: paginationType;
+  query: string | null;
+}

@@ -1,11 +1,18 @@
 @import './variables';
+@import './reset.scss';
 
 body {
-  margin: 0px;
+  font-size: 14px;
+  font-weight: 400;
+  color: $color-font;
+  width: 100%;
+  margin: 0;
+  scrollbar-width: thin;
+  scrollbar-color: #f3faf7;
 }
 
 header {
-  background-color: #333;
+  background-color: $color-primary-black;
   color: $color-light-text;
   padding: 1rem;
 }
@@ -19,13 +26,106 @@ nav a {
 main {
   padding: 1rem;
 }
+p {
+  color: $color-font;
+}
+h1 {
+  color: $color-accent;
+}
+.link {
+  cursor: pointer;
+  user-select: none;
+  color: $color-primary-black;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  &:hover {
+    color: $color-primary-hover;
+  }
+  &:focus {
+    color: $color-primary-focus;
+  }
+  &:disabled {
+    color: $disabled-text;
+  }
+  &--plain {
+    color: $color-font;
+  }
+  &--disabled {
+    color: $disabled-text;
+    &:hover {
+      color: $disabled-text;
+    }
+    &:focus {
+      color: $disabled-text;
+    }
+  }
+}
 
-footer {
-  background-color: #333;
-  color: #fff;
-  text-align: center;
-  padding: 1rem;
-  position: absolute;
-  bottom: 0;
+.table {
+  max-width: 800px;
   width: 100%;
+  margin: auto;
+  margin-bottom: 20px;
+  border: 1px solid $color-disabled;
+  border-collapse: collapse;
+  line-height: 18px;
+  text-align: center;
+  color: $color-font;
+}
+.table th {
+  font-weight: bold;
+  padding: 10px;
+  border: 1px solid $color-disabled;
+}
+.table td {
+  border: 1px solid $color-disabled;
+  padding: 10px;
+  text-align: start;
+}
+.table-wrapper {
+  background: $color-bg-light;
+  padding: 16px;
+  border-radius: 8px;
+}
+
+.input {
+  padding-left: 12px;
+  border: 1px solid #dddddd;
+  border-radius: 4px;
+  &:focus {
+    border: 1px solid $color-accent;
+    outline: none;
+  }
+}
+.btn {
+  cursor: pointer;
+  padding-left: 16px;
+  padding-right: 16px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-primary {
+  border: 1px solid;
+  font-weight: 400;
+  color: $color-accent;
+  background-color: $color-primary-black;
+  border-color: $color-primary-black;
+  &:hover {
+    background-color: $color-primary-green;
+    border-color: $color-primary-green;
+  }
+  &:focus {
+    background-color: $color-primary-focus;
+    border-color: $color-primary-focus;
+  }
+  &:disabled {
+    color: $disabled-text;
+    background-color: $color-disabled;
+    border-color: $color-disabled;
+  }
 }

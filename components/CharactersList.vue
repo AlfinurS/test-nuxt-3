@@ -1,5 +1,5 @@
 <template>
-  <div class="catalog__head">
+  <div class="catalog">
     <input
       type="text"
       class="catalog__search-input input"
@@ -7,29 +7,44 @@
       v-model="form.query"
       @input="setFilteredCharacters()"
     />
+
+    <div>
+      <button v-if="!isList" class="btn btn-primary" @click="setList">
+        <iconBtnList />
+      </button>
+
+      <button v-else class="btn btn-primary" @click="setList">
+        <iconBtnGrid />
+      </button>
+    </div>
   </div>
 
-  <div class="page__list-wrapper">
-    <div class="page__list">
+  <div class="catalog__wrapper">
+    <div class="catalog__grid" :class="{ catalog__list: isList }">
       <div
         v-for="character in computedCharacters"
         :key="character.id"
-        class="page__item"
+        class="catalog__item"
       >
-        <div class="page__item-wrapp">
-          <img
-            class="page__item-avatar"
-            :src="getImage(character.image)"
-            :alt="character.name"
-          />
-          <span class="page__item-name">{{ character.name }}</span>
-        </div>
+        <nuxt-link :to="`/character/${character.id}`">
+          <div class="catalog__item-wrapp">
+            <img
+              class="catalog__item-avatar"
+              :src="getImage(character.image)"
+              :alt="character.name"
+            />
+            <div class="catalog__item-wrapper">
+              <span class="catalog__item-name">{{ character.name }}</span>
+              <p>{{ character.species }}</p>
+            </div>
+          </div>
+        </nuxt-link>
       </div>
     </div>
   </div>
 
   <Pagination
-    v-if="!form.query"
+    v-if="!form.query && form.data.results.length > 0"
     :params="form.paginationData"
     class="catalog__pagination"
     @setPage="setPage"
@@ -40,20 +55,18 @@
 import { defineComponent } from 'vue';
 import { getCharactersList } from '@/api/apiService';
 import { setCharacters } from '@/store/charactersStore';
+import { usePageControl } from '@/composables/usePageControl';
 import type {
   characterType,
-  apiCharacterRespType,
+  IApiPaginationResp,
   paginationType,
+  IFormType,
 } from '@/types/common';
 import Pagination from '@/components/Pagination.vue';
+import iconBtnGrid from '@/components/icons/iconBtnGrid.vue';
+import iconBtnList from '@/components/icons/iconBtnList.vue';
 
-type formType = {
-  data: apiCharacterRespType;
-  paginationData: paginationType;
-  query: string | null;
-};
-
-const initData = (): apiCharacterRespType => ({
+const initData = (): IApiPaginationResp => ({
   info: {
     count: 0,
     pages: 0,
@@ -69,24 +82,30 @@ const initPaginationData = (): paginationType => ({
   count: 0,
 });
 
+interface ICharactersData extends IFormType {}
+
 export default defineComponent({
   name: 'CharactersList',
   components: {
     Pagination,
+    iconBtnGrid,
+    iconBtnList,
   },
   setup() {
     const store = setCharacters();
-    const characters = computed((): characterType[] => store.getCharacters);
     const filteredCharacters = computed(
       (): characterType[] => store.getFilteredCharacters
     );
-    const form = reactive<formType>({
+
+    const form = reactive<ICharactersData>({
       data: initData(),
       paginationData: initPaginationData(),
       query: null,
     });
 
-    async function loadCharacters(): Promise<void> {
+    const { setPage } = usePageControl(form, loadData);
+
+    async function loadData(): Promise<void> {
       try {
         const response = await getCharactersList(form.paginationData.page);
         if (response) {
@@ -98,9 +117,9 @@ export default defineComponent({
         console.error(error);
       }
     }
-    loadCharacters();
+    loadData();
 
-    const setFilteredCharacters = () => {
+    const setFilteredCharacters = (): void => {
       store.setFilteredCharacters(form.query);
     };
 
@@ -112,23 +131,24 @@ export default defineComponent({
       }
     });
 
+    const isList = ref<boolean>(false);
+    const setList = () => {
+      isList.value = !isList.value;
+    };
+
     const getImage = (image: string): string => {
       return image;
     };
 
-    const setPage = (page: number): void => {
-      form.paginationData.page = page;
-      loadCharacters();
-    };
-
     return {
       form,
-      characters,
+      isList,
       filteredCharacters,
       getImage,
-      loadCharacters,
+      loadData,
       setPage,
       setFilteredCharacters,
+      setList,
       computedCharacters,
     };
   },
@@ -136,42 +156,35 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
+@import '../assets/scss/_variables.scss';
 .catalog {
-  &__head {
-    margin-top: 20px;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    &-btns {
-      display: flex;
-    }
+  margin-top: 20px;
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &__wrapper {
+    margin-bottom: 40px;
   }
   &__search {
     &-input {
       max-width: 280px;
       width: 100%;
-      margin-right: 20px;
+      line-height: 28px;
+      margin-right: 16px;
     }
   }
-  &__pagination {
-    margin-right: 20px;
-  }
-}
-.page {
-  &__list {
+  &__grid {
     display: grid;
     grid-template-columns: 1fr;
-    margin-bottom: 10px;
+    gap: 18px;
     @media (min-width: 748px) {
       grid-template-columns: 1fr 1fr;
-      gap: 18px;
     }
     @media (min-width: 1200px) {
       grid-template-columns: 1fr 1fr 1fr;
-    }
-    &-wrapper {
-      margin-bottom: 40px;
     }
   }
   &__item {
@@ -180,16 +193,18 @@ export default defineComponent({
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    border-radius: 15px;
+    border-radius: 12px;
     border: 1px solid #f4f5f5;
-    background: white;
+    background: $color-bg-light;
     &-wrapp {
       display: flex;
       flex-direction: row;
       align-items: center;
     }
-    &-btn {
-      cursor: pointer;
+    &-wrapper {
+      display: flex;
+      flex-direction: column;
+      line-height: normal;
     }
     &-avatar {
       border-radius: 50%;
@@ -204,6 +219,21 @@ export default defineComponent({
       line-height: normal;
       margin-right: 8px;
     }
+  }
+}
+.catalog__list {
+  display: flex;
+  flex-direction: column;
+  &-item {
+    display: flex;
+    padding: 15px;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 12px;
+    border: 1px solid #f4f5f5;
+    background: $color-bg-light;
+    margin-bottom: 12px;
   }
 }
 </style>

@@ -1,11 +1,7 @@
 <template>
   <div>
     <header>
-      <h1>My Nuxt 3 Application</h1>
-      <nav>
-        <nuxt-link to="/">Home</nuxt-link>
-        <nuxt-link to="/character">About</nuxt-link>
-      </nav>
+      <h1>Rick and Morty</h1>
     </header>
     <main>
       <NuxtPage />

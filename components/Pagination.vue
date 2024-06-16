@@ -34,7 +34,7 @@ export default defineComponent({
     },
     maxPagesCountAfter: {
       type: Number,
-      default: 6,
+      default: 4,
     },
     maxPagesCountBefore: {
       type: Number,
@@ -100,7 +100,7 @@ export default defineComponent({
   &__item {
     border-radius: 3px;
     box-sizing: border-box;
-    color: $color-primary-text;
+    color: $color-primary-black;
     cursor: pointer;
     user-select: none;
     display: inline-block;
@@ -110,16 +110,16 @@ export default defineComponent({
     text-align: center;
     font-size: 14px;
     &:hover {
-      background: $color-bg-light;
-      color: $color-primary-hover;
+      background: $color-accent;
+      color: $color-primary-black;
     }
     &--active {
-      background: $color-primary;
-      color: $color-light-text;
+      background: $color-primary-black;
+      color: $color-accent;
       cursor: default;
       &:hover {
-        background: $color-primary;
-        color: $color-light-text;
+        background: $color-primary-black;
+        color: $color-accent;
       }
     }
   }

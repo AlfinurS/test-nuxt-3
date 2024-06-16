@@ -1,16 +1,18 @@
-import { characterType } from "@/types/common";
+import type { characterType } from '@/types/common';
 
 export const characterConst: characterType = Object.freeze({
   id: 0,
-  name: "",
-  status: "",
-  species: "",
-  type: "",
-  gender: "",
+  name: '',
+  status: '',
+  species: '',
+  type: '',
+  gender: '',
   origin: {
-    name: "",
-    url: "",
+    name: '',
+    url: '',
   },
-  image: "",
+  image: '',
   episode: [],
+  url: '',
+  created: '',
 });

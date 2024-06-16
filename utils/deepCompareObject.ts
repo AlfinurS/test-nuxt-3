@@ -1,4 +1,4 @@
-import isArray from '@/composables/isArray';
+import isArray from '@/utils/isArray';
 import type { objectType } from '@/types/common.ts';
 
 // Рекурсивный обход полей объекта со сравнением выражения
